@@ -5,6 +5,7 @@ import io.github.redouane59.twitter.dto.user.UserV2;
 import io.github.redouane59.twitter.signature.TwitterCredentials;
 import java.io.File;
 import java.util.Objects;
+import org.apache.commons.lang3.SystemUtils;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,8 +29,10 @@ public class BattleService {
         public static TwitterClient getInstance() {
             if (Objects.isNull(twitterClient)) {
                 try {
+                    var separator = SystemUtils.IS_OS_WINDOWS ? "\\" : "/";
+                    var path = "target" + separator + "classes" + separator + "twitter.json";
                     twitterClient = new TwitterClient(TwitterClient.OBJECT_MAPPER
-                            .readValue(new File("target/classes/twitter.json"), TwitterCredentials.class));
+                            .readValue(new File(path), TwitterCredentials.class));
                 } catch (Exception e) {
                     throw new TwitterAuthorizationException("Problem with parsing twitter.json file.", e);
                 }
